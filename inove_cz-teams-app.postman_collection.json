@@ -1,0 +1,135 @@
+{
+	"info": {
+		"_postman_id": "0dd1dfe2-be2f-434f-ad16-e1985d2728a8",
+		"name": "inove_cz-teams-app",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21763637"
+	},
+	"item": [
+		{
+			"name": "CB to TB",
+			"item": [
+				{
+					"name": "/api/notification",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userPrincipalName\": \"AnkitShubham@kasbouwensgmail.onmicrosoft.com\",\n    \"message\": \"hey there https://example.com yo\",\n    \"actions\": [\n        {\n            \"method\": \"POST\",\n            \"url\": \"https://webhook.site/ee3c5386-b84e-447c-9a06-a2e349fb955c/inove-test-post\",\n            \"body\": {\n                \"foo\": \"bar\",\n                \"foo1\": \"bar1\"\n            },\n            \"headers\": {\n                \"x-h1\": \"va1\",\n                \"x-h2\": \"va2\"\n            },\n            \"title\": \"POST button\",\n            \"type\": \"REQUEST\"\n        },\n        {\n            \"method\": \"PATCH\",\n            \"url\": \"https://webhook.site/ee3c5386-b84e-447c-9a06-a2e349fb955c/inove-test-patch\",\n            \"body\": {\n                \"foo\": \"bar\"\n            },\n            \"headers\": {\n                \"x-h1\": \"va1\",\n                \"x-h2\": \"va2\"\n            },\n            \"title\": \"PATCH button\",\n            \"type\": \"REQUEST\"\n        },\n        {\n            \"url\": \"https://webhook.site/ee3c5386-b84e-447c-9a06-a2e349fb955c/inove-test\",\n            \"title\": \"LINK button\",\n            \"type\": \"LINK\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{TB_URL}}/api/notification",
+							"host": [
+								"{{TB_URL}}"
+							],
+							"path": [
+								"api",
+								"notification"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"const CryptoJS = require(\"crypto-js\");",
+					"",
+					"// Secret key stored in Postman Environment Variables",
+					"const jwtSecret = pm.collectionVariables.get(\"INOVE_SIGNATURE_SECRET\") || \"qwerty1234\";",
+					"",
+					"// Function to generate JWT signature",
+					"function generateSignature(url, body) {",
+					"    const header = {",
+					"        alg: \"HS256\",",
+					"        typ: \"JWT\"",
+					"    };",
+					"",
+					"    const payload = {",
+					"        url: url,",
+					"        body: JSON.stringify(body),",
+					"        iss: \"INOVE\",",
+					"        exp: Math.floor(Date.now() / 1000) + 3600 // 1 hour validity",
+					"    };",
+					"",
+					"    function base64UrlEncode(obj) {",
+					"        return CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(JSON.stringify(obj)))",
+					"            .replace(/=+$/, \"\")",
+					"            .replace(/\\+/g, \"-\")",
+					"            .replace(/\\//g, \"_\");",
+					"    }",
+					"",
+					"    const encodedHeader = base64UrlEncode(header);",
+					"    const encodedPayload = base64UrlEncode(payload);",
+					"    const signature = CryptoJS.HmacSHA256(`${encodedHeader}.${encodedPayload}`, jwtSecret);",
+					"    const encodedSignature = CryptoJS.enc.Base64.stringify(signature)",
+					"        .replace(/=+$/, \"\")",
+					"        .replace(/\\+/g, \"-\")",
+					"        .replace(/\\//g, \"_\");",
+					"",
+					"    return `${encodedHeader}.${encodedPayload}.${encodedSignature}`;",
+					"}",
+					"",
+					"// Get request details",
+					"const url = pm.request.url.toString().split('{{TB_URL}}')[1];",
+					"const body =  (JSON.parse(pm.request.body.raw));",
+					"console.log(body)",
+					"// Generate and set JWT signature",
+					"const jwtSignature = generateSignature(url, body);",
+					"",
+					"console.log(`X-INOVE-SIGNATURE for URL ${url} is: ${jwtSignature}`);",
+					"",
+					"// Set request header",
+					"pm.request.headers.add({",
+					"    key: \"X-INOVE-SIGNATURE\",",
+					"    value: jwtSignature",
+					"});",
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "TB_URL",
+			"value": "https://skylark-climbing-hermit.ngrok-free.app",
+			"type": "string"
+		},
+		{
+			"key": "INOVE_SIGNATURE_SECRET",
+			"value": "qwerty1234",
+			"type": "string"
+		},
+		{
+			"key": "CB_URL",
+			"value": "https://webhook.site/ee3c5386-b84e-447c-9a06-a2e349fb955c",
+			"type": "string"
+		}
+	]
+}
