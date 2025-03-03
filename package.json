@@ -1,6 +1,6 @@
 {
     "name": "inove-teams-app",
-    "version": "2.0.9",
+    "version": "2.0.10",
     "description": "Microsoft Teams Toolkit Notification Bot Sample (Express)",
     "engines": {
         "node": "18 || 20"
