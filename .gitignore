@@ -1,5 +1,5 @@
 # TeamsFx files
-env/.env.*.user
+env/.env.*
 env/.env.local
 .DS_Store
 build
