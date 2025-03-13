@@ -1,7 +1,7 @@
 {
   "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.19/MicrosoftTeams.schema.json",
   "manifestVersion": "1.19",
-  "version": "2.0.10",
+  "version": "2.0.11",
   "id": "${{TEAMS_APP_ID}}",
   "developer": {
       "name": "XEVOS Solutions s.r.o.",
@@ -14,8 +14,8 @@
     "outline": "outline.png"
   },
   "name": {
-    "short": "Speybl",
-    "full": "Speybl"
+    "short": "Speybl Notification Bot",
+    "full": "Speybl Notification Bot"
   },
   "description": {
     "short": "Speybl is Microsoft Teams notification bot for Speybl application.",
